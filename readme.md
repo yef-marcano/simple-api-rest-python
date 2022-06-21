@@ -12,6 +12,6 @@ Requerido:
  
 -XAMPP
 -Mysql
--Python
+-Python310
 
 Pruebas realizadas con Postman
