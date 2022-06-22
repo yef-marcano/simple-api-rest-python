@@ -1,4 +1,4 @@
-from flask import Flask,jsonify
+from flask import Flask,jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 
@@ -24,7 +24,6 @@ class Categoria (db.Model):
 #crea todas las tablas declaradas
 db.create_all()
 
-
 #esquema 
 class CategoriaSchema(mash.Schema):
     class Meta:
@@ -36,13 +35,34 @@ categoria_schema = CategoriaSchema()
 #Varias respuestas
 categorias_schema = CategoriaSchema(many=True)
 
+#GET de todas las categorias.
 @app.route('/categoria',methods=['GET'])
 def get_categoria():
     all_categorias = Categoria.query.all()
     result = categorias_schema.dump(all_categorias)
     return jsonify(result)
 
+#GET por id.
+@app.route('/categoria/<id>',methods=['GET'])
+def get_categoria_x_id(id):
+    una_categoria = Categoria.query.get(id)
+    return categoria_schema.jsonify(una_categoria)
 
+#POST de para insertar
+@app.route('/categoria',methods=['POST'])
+def insert_categoria():
+    #https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/
+    #Fuerzo el json, envio de nombre y descripcion en el post
+    data = request.get_json(force=True)
+    cat_nombre = data['nombre']
+    cat_descripcion = data['descripcion']
+    nuevo_registro = Categoria(cat_nombre,cat_descripcion)
+    db.session.add(nuevo_registro)
+    db.session.commit()
+    return categoria_schema.jsonify(nuevo_registro)
+
+
+#GET de la ruta base
 @app.route('/',methods=['GET'])
 
 #mensaje de bienvenida
