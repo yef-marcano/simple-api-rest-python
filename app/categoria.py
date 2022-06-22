@@ -78,6 +78,13 @@ def update_categoria(id):
     db.session.commit()
     return categoria_schema.jsonify(actualizar_categoria)
 
+#DELETE Solo como prueba en un estado real solo cambiar estatus como siempre
+@app.route('/categoria/<id>',methods=['DELETE'])
+def delete_categoria(id):
+    eliminar_categoria = Categoria.query.get(id)
+    db.session.delete(eliminar_categoria)
+    db.session.commit()
+    return categoria_schema.jsonify(eliminar_categoria)
 
 #GET de la ruta base
 @app.route('/',methods=['GET'])
