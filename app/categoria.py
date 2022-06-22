@@ -61,10 +61,26 @@ def insert_categoria():
     db.session.commit()
     return categoria_schema.jsonify(nuevo_registro)
 
+#PUT para actualizar
+@app.route('/categoria/<id>',methods=['PUT'])
+def update_categoria(id):
+    #https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/
+    #Fuerzo el json, envio de nombre y descripcion con el id en el put y lo actualiza
+    actualizar_categoria = Categoria.query.get(id)
+
+    data = request.get_json(force=True)
+    cat_nombre = data['nombre']
+    cat_descripcion = data['descripcion']
+
+    actualizar_categoria.cat_nombre = cat_nombre
+    actualizar_categoria.cat_descripcion = cat_descripcion
+
+    db.session.commit()
+    return categoria_schema.jsonify(actualizar_categoria)
+
 
 #GET de la ruta base
 @app.route('/',methods=['GET'])
-
 #mensaje de bienvenida
 def index():
     return jsonify({'Mensaje':'Hola, Bienvenido a la API'})
